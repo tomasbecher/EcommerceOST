@@ -114,7 +114,7 @@ export const LoginPage = () => {
                                     <input 
                                         type="button"
                                         className="btnChangeCurrentForm"
-                                        value="Register" 
+                                        value="Go to Register" 
                                         onClick={toggleForm}
                                     />
                                 </div>
@@ -209,7 +209,7 @@ export const LoginPage = () => {
                                     <input 
                                         type="button"
                                         className="btnChangeCurrentForm"
-                                        value="Login" 
+                                        value="Go to Login" 
                                         onClick={toggleForm}
                                     />
                                 </div>

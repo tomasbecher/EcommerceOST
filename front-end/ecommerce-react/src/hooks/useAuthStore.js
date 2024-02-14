@@ -19,7 +19,6 @@ export const useAuthStore = () => {
             localStorage.setItem('username', data.username);
             dispatch( onLogin({ username: data.username}) );
         } catch (error) {
-            console.log(error);
             dispatch( onLogout('Incorrect credentials') );
             setTimeout(() => {
                 dispatch( clearErrorMessage() );

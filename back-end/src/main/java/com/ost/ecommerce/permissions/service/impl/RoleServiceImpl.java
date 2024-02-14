@@ -6,7 +6,11 @@ import com.ost.ecommerce.permissions.repository.entity.Role;
 import com.ost.ecommerce.permissions.repository.entity.UserRole;
 import com.ost.ecommerce.permissions.repository.entity.UserRolePK;
 import com.ost.ecommerce.permissions.service.RoleService;
+import com.ost.ecommerce.user.repository.UserRepository;
+import com.ost.ecommerce.user.repository.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +23,7 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Optional<Role> findByName(String name) {
@@ -40,6 +45,16 @@ public class RoleServiceImpl implements RoleService {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public User getCurrentUser() {
+        // TODO agregar a ExceptionHandler
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByUsername(authentication.getName()).orElseThrow(
+                () -> new RuntimeException(
+                        "User not found.")
+        );
     }
 
     private Optional<Role> findRoleById(Short roleId){

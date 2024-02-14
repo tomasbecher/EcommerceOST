@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import Swal from 'sweetalert2';
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -17,6 +18,8 @@ export const authSlice = createSlice({
             state.status = 'authenticated';
             state.user = payload;
             state.errorMessage = undefined;
+            window.location.href = "/user";
+                
         },
         onLogout: ( state, { payload } ) => {
             state.status = 'not-authenticated';
