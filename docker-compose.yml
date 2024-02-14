@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:14-alpine
+    container_name: ecommerceost-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ecommerceost
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Local123
+    volumes:
+      - ./docker-data:/docker-entrypoint-initdb.d  
+      - ./docker-data:/data 
