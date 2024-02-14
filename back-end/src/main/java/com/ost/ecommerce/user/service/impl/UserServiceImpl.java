@@ -1,5 +1,7 @@
 package com.ost.ecommerce.user.service.impl;
 
+import com.ost.ecommerce.error.exceptions.NotFoundException;
+import com.ost.ecommerce.error.exceptions.OperationNotValidException;
 import com.ost.ecommerce.permissions.repository.entity.Role;
 import com.ost.ecommerce.permissions.repository.entity.UserRole;
 import com.ost.ecommerce.permissions.repository.entity.UserRolePK;
@@ -35,8 +37,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User create(UserCreate userCreate) {
+        validateUserCreate(userCreate);
         Person person = setPerson(userCreate.getName(), userCreate.getLastName(), userCreate.getEmail());
-        // TODO validar username no existente
         User user = userRepository.save(
                 new User(
                         userCreate.getUsername(),
@@ -57,10 +59,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findOrFail(Integer userId) {
-        // TODO agregar a ExceptionHandler
         return userRepository.findById(userId).orElseThrow(
-                () -> new RuntimeException(
-                        "User not found.")
+                () -> new NotFoundException("user-not-found","User not found.")
         );
     }
 
@@ -123,10 +123,42 @@ public class UserServiceImpl implements UserService {
     }
 
     private Person setPerson(String name, String lastName, String email){
-        // TODO Agregar validaciones nombre y apellido solo letras, email que cumpla el formato
         return personService.save(
                 new Person(name,lastName,email)
         );
+    }
+
+    private void validateUserCreate(UserCreate userCreate){
+        if (userCreate.getUsername().isBlank() || userCreate.getPassword().isBlank() ||
+                userCreate.getName().isBlank() || userCreate.getLastName().isBlank()
+                || userCreate.getEmail().isBlank() || userCreate.getReceiveNewsletter() == null
+        )
+            throw makeError("All fields are required.");
+        if (!validateOnlyLetter(userCreate.getUsername()))
+            throw makeError("Name field should contain only letters.");
+        if (!validateOnlyLetter(userCreate.getLastName()))
+            throw makeError("Last name field should contain only letters.");
+        if (!validateEmail(userCreate.getEmail()))
+            throw makeError("Please enter a valid email address format.");
+        if (usernameAlreadyExists(userCreate.getUsername()))
+            throw makeError("This username is already taken. Please choose a different one.");
+    }
+
+    private boolean validateOnlyLetter(String attr){
+        return attr.matches("^[a-zA-Z]+$");
+    }
+
+    private boolean validateEmail(String email) {
+        String regex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(regex);
+    }
+
+    private boolean usernameAlreadyExists(String username){
+        return findByUsername(username).isPresent();
+    }
+
+    private OperationNotValidException makeError(String msg, Object ...args) {
+        return new OperationNotValidException("user-create", msg, args);
     }
 
 }

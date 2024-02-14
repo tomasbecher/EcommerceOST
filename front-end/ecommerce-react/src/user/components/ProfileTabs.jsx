@@ -9,6 +9,7 @@ import axios from 'axios';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
+import Swal from 'sweetalert2';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -65,6 +66,7 @@ export const ProfileTabs = () => {
             setData(response.data);
         })
         .catch(error => {
+            Swal.fire('Error', error.response.data.text, 'error');
             console.error('Error fetching data:', error);
         });
     }, []);

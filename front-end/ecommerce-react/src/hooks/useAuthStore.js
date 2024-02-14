@@ -2,12 +2,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ecommerceApi } from '../api';
 import { clearErrorMessage, onChecking, onLogin, onLogout } from '../store';
 import Swal from 'sweetalert2';
+import {useState} from "react";
 
 
 export const useAuthStore = () => {
 
     const { status, user, errorMessage } = useSelector( state => state.auth );
     const dispatch = useDispatch();
+    const [error, setError] = useState(null);
 
     const startLogin = async({ username, password }) => {
         try {
@@ -19,6 +21,7 @@ export const useAuthStore = () => {
             localStorage.setItem('username', data.username);
             dispatch( onLogin({ username: data.username}) );
         } catch (error) {
+            setError('Incorrect credentials');
             dispatch( onLogout('Incorrect credentials') );
             setTimeout(() => {
                 dispatch( clearErrorMessage() );
@@ -39,6 +42,8 @@ export const useAuthStore = () => {
               });
             
         } catch (error) {
+            console.log(error.response.data.text);
+            setError(error.response.data.text);
             dispatch( onLogout( error.response.data?.msg || '--' ) );
             setTimeout(() => {
                 dispatch( clearErrorMessage() );
@@ -55,6 +60,7 @@ export const useAuthStore = () => {
         errorMessage,
         status, 
         user,
+        error,
         startLogin,
         startLogout,
         startRegister,

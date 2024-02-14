@@ -40,7 +40,7 @@ const StripeButton = ({ price, subscriptionType }) => {
             });
       })
       .catch((error) => {
-        setError(error.response.data.message);
+        setError(error.response.data.text);
         Swal.fire({
             title: "Payment failed!",
             text: "Please click OK to continue.",

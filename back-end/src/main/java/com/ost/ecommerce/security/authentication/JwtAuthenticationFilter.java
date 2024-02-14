@@ -1,7 +1,6 @@
 package com.ost.ecommerce.security.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ost.ecommerce.security.repository.entity.RefreshToken;
 import com.ost.ecommerce.security.service.AuthService;
 import com.ost.ecommerce.user.repository.entity.User;
 import io.jsonwebtoken.Claims;
@@ -79,9 +78,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("token", token);
         body.put("username", username);
         body.put("message", String.format("Hello %s, you have successfully logged in.", username));
-
-        RefreshToken refreshToken = authService.createRefreshToken(username);
-        body.put("refreshToken", refreshToken.getToken());
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setContentType(CONTENT_TYPE);

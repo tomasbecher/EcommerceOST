@@ -1,5 +1,6 @@
 package com.ost.ecommerce.permissions.service.impl;
 
+import com.ost.ecommerce.error.exceptions.NotFoundException;
 import com.ost.ecommerce.permissions.repository.RoleRepository;
 import com.ost.ecommerce.permissions.repository.UserRoleRepository;
 import com.ost.ecommerce.permissions.repository.entity.Role;
@@ -49,11 +50,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public User getCurrentUser() {
-        // TODO agregar a ExceptionHandler
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userRepository.findByUsername(authentication.getName()).orElseThrow(
-                () -> new RuntimeException(
-                        "User not found.")
+                () -> new NotFoundException("user-not-found", "User not found.")
         );
     }
 

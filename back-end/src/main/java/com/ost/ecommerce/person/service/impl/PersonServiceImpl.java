@@ -1,5 +1,6 @@
 package com.ost.ecommerce.person.service.impl;
 
+import com.ost.ecommerce.error.exceptions.NotFoundException;
 import com.ost.ecommerce.person.PersonRepository;
 import com.ost.ecommerce.person.repository.Person;
 import com.ost.ecommerce.person.service.PersonService;
@@ -19,10 +20,8 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Person getByIdOrFail(Integer personId) {
-        // TODO agregar a ExceptionHandler
         return personRepository.findById(personId).orElseThrow(
-                () -> new RuntimeException(
-                        "Person not found.")
+                () -> new NotFoundException("person-not-found", "Person not found.")
         );
     }
 }

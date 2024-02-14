@@ -48,8 +48,6 @@ public class SpringSecurityConfiguration {
                         .requestMatchers(HttpMethod.POST,"/user/register").permitAll()
                         .requestMatchers(HttpMethod.POST,"/auth/renew").permitAll()
                         .requestMatchers(HttpMethod.POST,"/stripe/*").permitAll()
-                        // TODO Agregar configuracion para ADMIN para por ejemplo cambiar el precio de una subscripcion (hacerlo en el preauthorize)
-                        // Ya deberia dejar un usuario admin en la bdd, y sacaria lo de isadmin y eso del usercreate
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(),authService))

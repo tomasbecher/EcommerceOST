@@ -1,5 +1,7 @@
 package com.ost.ecommerce.subscription.service.impl;
 
+import com.ost.ecommerce.error.exceptions.NotFoundException;
+import com.ost.ecommerce.error.exceptions.OperationNotValidException;
 import com.ost.ecommerce.permissions.service.RoleService;
 import com.ost.ecommerce.subscription.repository.SubscriptionRepository;
 import com.ost.ecommerce.subscription.repository.entity.ESubscriptionState;
@@ -29,21 +31,18 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     @Transactional
     public Integer succeeded(SubscriptionSucceeded subscriptionSucceeded) {
-        // TODO agregar a ExceptionHandler
         User user = roleService.getCurrentUser();
         UserSubscription userSubscription = getByUserIdOrFail(user.getId());
         if (userSubscription.getSubscriptionState().equals(ESubscriptionState.ACTIVE))
-            throw new RuntimeException("User is already subscribed.");
+            throw new OperationNotValidException("user-already-subscribed","User is already subscribed.");
         userSubscription.activate(subscriptionSucceeded.getSubscriptionType());
         return subscriptionRepository.save(userSubscription).getId();
     }
 
     @Override
     public UserSubscription getByUserIdOrFail(Integer userId) {
-        // TODO agregar a ExceptionHandler
         return subscriptionRepository.findByUserId(userId).orElseThrow(
-                () -> new RuntimeException(
-                        "Subscription not found.")
+                () -> new NotFoundException("subscription-not-found", "Subscription not found.")
         );
     }
 
