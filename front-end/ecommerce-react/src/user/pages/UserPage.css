@@ -1,0 +1,11 @@
+.user-tab{
+    font-weight:bold;
+}
+
+.user-tab[aria-selected="true"]{
+    color:747bff!important;
+}
+
+.user-tab .Mui-selected .tab-indicator {
+    color:747bff!important;
+  }

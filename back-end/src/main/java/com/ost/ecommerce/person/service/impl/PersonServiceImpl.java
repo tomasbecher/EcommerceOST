@@ -16,4 +16,13 @@ public class PersonServiceImpl implements PersonService {
     public Person save(Person person) {
         return personRepository.save(person);
     }
+
+    @Override
+    public Person getByIdOrFail(Integer personId) {
+        // TODO agregar a ExceptionHandler
+        return personRepository.findById(personId).orElseThrow(
+                () -> new RuntimeException(
+                        "Person not found.")
+        );
+    }
 }
